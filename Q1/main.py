@@ -47,12 +47,12 @@ def otsu_thresholding(img) :
 
 	for i in range(1,hist.shape[0]) :									# iterating over historgram
 		# mean  for the both side of trial threshold with denominator clipping
-		mean_left  = np.sum(mean_memo[:i]) / max(0.00001 , np.sum(hist[:i]))
-		mean_right = np.sum(mean_memo[i:]) / max(0.00001 , np.sum(hist[i:]))
+		mean_left  = (np.sum(mean_memo[:i]) + 1e-05) / (np.sum(hist[:i]) + 1e-05)
+		mean_right = (np.sum(mean_memo[i:]) + 1e-05) / (np.sum(hist[i:]) + 1e-05)
 
 		# Total sum of squares for the both side of trial threshold
-		TSS_left  = np.power(pixel_index[:i] - mean_left  , 2).sum()
-		TSS_right = np.power(pixel_index[i:] - mean_right , 2).sum()
+		TSS_left  = (hist[:i] * np.power((pixel_index[:i] - mean_left ) , 2)).sum()
+		TSS_right = (hist[i:] * np.power((pixel_index[i:] - mean_right) , 2)).sum()
 
 		# calculating sum of Total sum of squares
 		val = TSS_left + TSS_right
@@ -148,6 +148,7 @@ if __name__ == "__main__":
 
 	threshold = otsu_thresholding(grayscale_img) ;				# computing otsu threshold
 	print('threshold :' , threshold)
+	exit()
 
 	# ------------------------------------------------- assumption choice -------------------------------------------------
 	choice = 0
